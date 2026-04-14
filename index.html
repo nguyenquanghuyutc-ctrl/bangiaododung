@@ -8,7 +8,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap');
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        /* Đổi sang font Times New Roman cho đúng chuẩn văn bản pháp lý */
+        /* Font Times New Roman chuẩn văn bản pháp lý */
         body { background: #eef2f5; font-family: 'Times New Roman', Times, serif; color: #000; line-height: 1.5; }
 
         /* Nút In ấn */
@@ -17,7 +17,7 @@
         .btn-print:hover { background-color: #004494; transform: translateY(-2px); }
 
         /* Vùng in A4 */
-        .a4-container { background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .a4-container { background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative;}
         
         /* Header chuẩn Pháp lý */
         .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; text-align: center; }
@@ -57,11 +57,11 @@
         .signature-box p { font-style: italic; font-size: 15px; margin-bottom: 90px; }
         .signature-name { font-weight: bold; font-size: 16px; }
 
-        /* Khi in sẽ ẩn nút in và bỏ background/margin */
+        /* Khi in sẽ ẩn nút in, hộp báo lỗi và bỏ background/margin */
         @media print {
             body { background: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact; }
-            .print-btn-container { display: none; }
-            .a4-container { width: 100%; height: 100%; margin: 0; padding: 15mm 20mm; box-shadow: none; }
+            .no-print { display: none !important; }
+            .a4-container { width: 100%; height: 100%; margin: 0; padding: 15mm 20mm; box-shadow: none; border: none; }
             @page { size: A4 portrait; margin: 0; }
         }
     </style>
@@ -73,6 +73,8 @@
     </div>
 
     <div class="a4-container">
+        <div id="error-container"></div>
+
         <div class="header">
             <div class="company-info">
                 <h2>CÔNG TY TNHH LALIA VIỆT NAM</h2>
@@ -154,6 +156,7 @@
     </div>
 
     <script>
+        // Dữ liệu Mẫu (Demo)
         const demoData = {
             id: "9b30d30f",
             van_phong: "Thanh Hóa",
@@ -177,13 +180,28 @@
 
             if (rawData) {
                 try {
-                    printData = JSON.parse(decodeURIComponent(rawData));
+                    // Cố gắng dịch ngược chuỗi JSON
+                    printData = JSON.parse(rawData); 
                 } catch (e) {
                     console.error("Lỗi đọc dữ liệu JSON:", e);
-                    alert("Dữ liệu truyền vào bị lỗi, đang hiển thị bản mẫu.");
+                    
+                    // NẾU LỖI: Bật hộp cảnh báo màu đỏ
+                    const errorContainer = document.getElementById('error-container');
+                    errorContainer.classList.add('no-print');
+                    errorContainer.innerHTML = `
+                        <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                            <h3 style="margin-bottom: 8px;">⚠️ PHÁT HIỆN LỖI CÚ PHÁP JSON TỪ APPSHEET!</h3>
+                            <p>Hệ thống không thể đọc được dữ liệu truyền qua URL nên đang phải hiển thị bản Demo.</p>
+                            <p style="margin-top: 5px;"><b>Chi tiết lỗi:</b> ${e.message}</p>
+                            <hr style="margin: 10px 0; border-color: #f5c6cb;">
+                            <p><b>Chuỗi JSON bị lỗi:</b> (Hãy cập nhật lại công thức SUBSTITUTE trong AppSheet để loại bỏ ký tự Enter/xuống dòng)</p>
+                            <pre style="white-space: pre-wrap; font-size: 13px; background: #fff; padding: 10px; border: 1px solid #ccc; margin-top: 5px; color: #333;">${rawData}</pre>
+                        </div>
+                    `;
                 }
             }
 
+            // Đổ dữ liệu vào Form
             document.getElementById('txt_id').innerText = printData.id || "N/A";
             document.getElementById('txt_van_phong').innerText = printData.van_phong || "N/A";
             document.getElementById('txt_ngay_ban_giao').innerText = printData.ngay_ban_giao || "___/___/20___";
@@ -203,9 +221,12 @@
             
             if (printData.ghi_chu) {
                 document.getElementById('txt_ghi_chu').innerText = printData.ghi_chu;
+            } else {
+                document.getElementById('txt_ghi_chu').innerText = "Không có";
             }
         }
 
+        // Kích hoạt hàm loadData khi trang web tải xong
         document.addEventListener("DOMContentLoaded", loadData);
     </script>
 </body>
