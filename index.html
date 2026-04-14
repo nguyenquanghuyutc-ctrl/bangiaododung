@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biên Bản Bàn Giao Tài Sản - LALIA VIỆT NAM</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Đổi sang font Times New Roman cho đúng chuẩn văn bản pháp lý */
+        body { background: #eef2f5; font-family: 'Times New Roman', Times, serif; color: #000; line-height: 1.5; }
+
+        /* Nút In ấn */
+        .print-btn-container { text-align: center; margin: 20px 0; }
+        .btn-print { background-color: #0056b3; color: white; border: none; padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; }
+        .btn-print:hover { background-color: #004494; transform: translateY(-2px); }
+
+        /* Vùng in A4 */
+        .a4-container { background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        
+        /* Header chuẩn Pháp lý */
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; text-align: center; }
+        
+        .company-info { width: 45%; }
+        .company-info h2 { font-size: 16px; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
+        .company-info p { font-size: 15px; }
+        .line-company { width: 100px; height: 1px; background-color: #000; margin: 5px auto 0 auto; }
+
+        .national-motto { width: 55%; }
+        .national-motto h3 { font-size: 16px; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
+        .national-motto .motto { font-size: 16px; font-weight: bold; }
+        .line-motto { width: 180px; height: 1.5px; background-color: #000; margin: 5px auto 0 auto; }
+
+        .title { text-align: center; margin-bottom: 30px; margin-top: 20px; }
+        .title h1 { font-size: 24px; text-transform: uppercase; font-weight: bold; margin-bottom: 5px;}
+        .title p { font-style: italic; font-size: 15px; }
+
+        .info-section { margin-bottom: 20px; display: flex; justify-content: space-between; }
+        .info-block { width: 48%; }
+        .info-block h3 { font-size: 16px; margin-bottom: 10px; font-weight: bold; text-decoration: underline; }
+        .info-line { display: flex; margin-bottom: 8px; font-size: 15px; }
+        .info-line .label { font-weight: bold; width: 100px; flex-shrink: 0; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; margin-bottom: 20px; }
+        th, td { border: 1px solid #000; padding: 10px; text-align: left; font-size: 15px; }
+        th { background-color: #f4f4f4; text-align: center; font-weight: bold;}
+        .text-center { text-align: center; }
+
+        .note-section { margin-bottom: 30px; font-size: 15px; }
+
+        .commitment { font-size: 15px; text-align: justify; margin-bottom: 20px; }
+
+        .signatures { display: flex; justify-content: space-around; text-align: center; margin-top: 30px; }
+        .signature-box { width: 40%; }
+        .signature-box h4 { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
+        .signature-box p { font-style: italic; font-size: 15px; margin-bottom: 90px; }
+        .signature-name { font-weight: bold; font-size: 16px; }
+
+        /* Khi in sẽ ẩn nút in và bỏ background/margin */
+        @media print {
+            body { background: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact; }
+            .print-btn-container { display: none; }
+            .a4-container { width: 100%; height: 100%; margin: 0; padding: 15mm 20mm; box-shadow: none; }
+            @page { size: A4 portrait; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="print-btn-container no-print">
+        <button class="btn-print" onclick="window.print()">🖨️ IN BIÊN BẢN (A4)</button>
+    </div>
+
+    <div class="a4-container">
+        <div class="header">
+            <div class="company-info">
+                <h2>CÔNG TY TNHH LALIA VIỆT NAM</h2>
+                <p>Số: <span id="txt_id"></span>/BBBG</p>
+                <div class="line-company"></div>
+            </div>
+            <div class="national-motto">
+                <h3>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</h3>
+                <p class="motto">Độc lập - Tự do - Hạnh phúc</p>
+                <div class="line-motto"></div>
+            </div>
+        </div>
+
+        <div class="title">
+            <h1>BIÊN BẢN BÀN GIAO TÀI SẢN</h1>
+            <p>Hôm nay, ngày <span id="txt_ngay_ban_giao"></span>, tại văn phòng <span id="txt_van_phong"></span>. Chúng tôi gồm có:</p>
+        </div>
+
+        <div class="info-section">
+            <div class="info-block">
+                <h3>BÊN GIAO (BÊN A)</h3>
+                <div class="info-line"><div class="label">Ông/Bà:</div> <div id="txt_ten_nguoi_tao"></div></div>
+                <div class="info-line"><div class="label">Mã NS:</div> <div id="txt_nguoi_tao"></div></div>
+            </div>
+            
+            <div class="info-block">
+                <h3>BÊN NHẬN (BÊN B)</h3>
+                <div class="info-line"><div class="label">Ông/Bà:</div> <div id="txt_ten_nhan_su"></div></div>
+                <div class="info-line"><div class="label">Mã NS:</div> <div id="txt_nhan_su_su_dung"></div></div>
+            </div>
+        </div>
+
+        <p class="commitment">Bên A tiến hành bàn giao tài sản/công cụ cho Bên B tiếp nhận, quản lý và sử dụng phục vụ công việc với chi tiết như sau:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th width="5%">STT</th>
+                    <th width="35%">Tên tài sản / Thiết bị</th>
+                    <th width="10%">SL</th>
+                    <th width="25%">Tình trạng lúc giao</th>
+                    <th width="25%">Vị trí bàn giao</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-center">1</td>
+                    <td id="txt_ten_san_pham" style="font-weight: bold;"></td>
+                    <td id="txt_so_luong" class="text-center"></td>
+                    <td id="txt_tinh_trang"></td>
+                    <td id="txt_vi_tri"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="note-section">
+            <strong>Ghi chú kèm theo:</strong> <span id="txt_ghi_chu">Không có</span>
+        </div>
+
+        <p class="commitment">
+            Bên B xác nhận đã nhận đủ số lượng, kiểm tra đúng tình trạng tài sản nêu trên. Kể từ thời điểm ký biên bản này, Bên B chịu trách nhiệm bảo quản, giữ gìn và sử dụng tài sản đúng mục đích. Nếu xảy ra hư hỏng do lỗi chủ quan hoặc mất mát, Bên B phải chịu trách nhiệm bồi thường theo quy định của công ty.
+        </p>
+        <p class="commitment">
+            Biên bản được lập thành 02 bản có giá trị pháp lý như nhau, mỗi bên giữ 01 bản để làm cơ sở thực hiện.
+        </p>
+
+        <div class="signatures">
+            <div class="signature-box">
+                <h4>ĐẠI DIỆN BÊN NHẬN (BÊN B)</h4>
+                <p>(Ký và ghi rõ họ tên)</p>
+                <div class="signature-name" id="sign_nhan_su"></div>
+            </div>
+            <div class="signature-box">
+                <h4>ĐẠI DIỆN BÊN GIAO (BÊN A)</h4>
+                <p>(Ký và ghi rõ họ tên)</p>
+                <div class="signature-name" id="sign_nguoi_tao"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const demoData = {
+            id: "9b30d30f",
+            van_phong: "Thanh Hóa",
+            ten_san_pham: "Bàn dài (1,2 x 2m)",
+            hinh_anh: "",
+            so_luong: 1,
+            vi_tri: "Phòng họp văn phòng",
+            tinh_trang: "Hoạt động tốt",
+            nhan_su_su_dung: "THR010",
+            ten_nhan_su: "NGUYỄN QUANG HUY",
+            ngay_ban_giao: "18/04/2026",
+            nguoi_tao: "THR010",
+            ten_nguoi_tao: "NGUYỄN QUANG HUY",
+            ghi_chu: "Bàn giao kèm 4 ghế da đen."
+        };
+
+        function loadData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const rawData = urlParams.get('data');
+            let printData = demoData; 
+
+            if (rawData) {
+                try {
+                    printData = JSON.parse(decodeURIComponent(rawData));
+                } catch (e) {
+                    console.error("Lỗi đọc dữ liệu JSON:", e);
+                    alert("Dữ liệu truyền vào bị lỗi, đang hiển thị bản mẫu.");
+                }
+            }
+
+            document.getElementById('txt_id').innerText = printData.id || "N/A";
+            document.getElementById('txt_van_phong').innerText = printData.van_phong || "N/A";
+            document.getElementById('txt_ngay_ban_giao').innerText = printData.ngay_ban_giao || "___/___/20___";
+            
+            document.getElementById('txt_ten_nguoi_tao').innerText = printData.ten_nguoi_tao || "N/A";
+            document.getElementById('txt_nguoi_tao').innerText = printData.nguoi_tao || "N/A";
+            document.getElementById('sign_nguoi_tao').innerText = printData.ten_nguoi_tao || "";
+            
+            document.getElementById('txt_ten_nhan_su').innerText = printData.ten_nhan_su || "N/A";
+            document.getElementById('txt_nhan_su_su_dung').innerText = printData.nhan_su_su_dung || "N/A";
+            document.getElementById('sign_nhan_su').innerText = printData.ten_nhan_su || "";
+
+            document.getElementById('txt_ten_san_pham').innerText = printData.ten_san_pham || "N/A";
+            document.getElementById('txt_so_luong').innerText = printData.so_luong || "0";
+            document.getElementById('txt_tinh_trang').innerText = printData.tinh_trang || "N/A";
+            document.getElementById('txt_vi_tri').innerText = printData.vi_tri || "N/A";
+            
+            if (printData.ghi_chu) {
+                document.getElementById('txt_ghi_chu').innerText = printData.ghi_chu;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadData);
+    </script>
+</body>
+</html>
