@@ -8,7 +8,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap');
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        /* Font Times New Roman chuẩn văn bản pháp lý */
         body { background: #eef2f5; font-family: 'Times New Roman', Times, serif; color: #000; line-height: 1.5; }
 
         /* Nút In ấn */
@@ -19,9 +18,8 @@
         /* Vùng in A4 */
         .a4-container { background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative;}
         
-        /* Header chuẩn Pháp lý */
+        /* Header pháp lý */
         .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; text-align: center; }
-        
         .company-info { width: 45%; }
         .company-info h2 { font-size: 16px; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
         .company-info p { font-size: 15px; }
@@ -32,32 +30,38 @@
         .national-motto .motto { font-size: 16px; font-weight: bold; }
         .line-motto { width: 180px; height: 1.5px; background-color: #000; margin: 5px auto 0 auto; }
 
+        /* Tiêu đề */
         .title { text-align: center; margin-bottom: 30px; margin-top: 20px; }
         .title h1 { font-size: 24px; text-transform: uppercase; font-weight: bold; margin-bottom: 5px;}
         .title p { font-style: italic; font-size: 15px; }
 
+        /* Info 2 bên */
         .info-section { margin-bottom: 20px; display: flex; justify-content: space-between; }
         .info-block { width: 48%; }
         .info-block h3 { font-size: 16px; margin-bottom: 10px; font-weight: bold; text-decoration: underline; }
         .info-line { display: flex; margin-bottom: 8px; font-size: 15px; }
         .info-line .label { font-weight: bold; width: 100px; flex-shrink: 0; }
 
+        /* Bảng Tài sản */
         table { width: 100%; border-collapse: collapse; margin-top: 20px; margin-bottom: 20px; }
-        th, td { border: 1px solid #000; padding: 10px; text-align: left; font-size: 15px; }
+        th, td { border: 1px solid #000; padding: 10px; text-align: left; font-size: 15px; vertical-align: middle; }
         th { background-color: #f4f4f4; text-align: center; font-weight: bold;}
         .text-center { text-align: center; }
+        
+        /* Căn chỉnh ảnh trong bảng */
+        .img-cell { text-align: center; padding: 5px !important; height: 80px; }
+        .img-preview { max-width: 70px; max-height: 70px; object-fit: contain; border-radius: 4px; border: 1px solid #ddd; }
 
         .note-section { margin-bottom: 30px; font-size: 15px; }
-
         .commitment { font-size: 15px; text-align: justify; margin-bottom: 20px; }
 
+        /* Chữ ký */
         .signatures { display: flex; justify-content: space-around; text-align: center; margin-top: 30px; }
         .signature-box { width: 40%; }
         .signature-box h4 { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
         .signature-box p { font-style: italic; font-size: 15px; margin-bottom: 90px; }
         .signature-name { font-weight: bold; font-size: 16px; }
 
-        /* Khi in sẽ ẩn nút in, hộp báo lỗi và bỏ background/margin */
         @media print {
             body { background: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact; }
             .no-print { display: none !important; }
@@ -113,15 +117,18 @@
             <thead>
                 <tr>
                     <th width="5%">STT</th>
-                    <th width="35%">Tên tài sản / Thiết bị</th>
-                    <th width="10%">SL</th>
-                    <th width="25%">Tình trạng lúc giao</th>
+                    <th width="15%">Hình ảnh</th>
+                    <th width="25%">Tên tài sản / Thiết bị</th>
+                    <th width="8%">SL</th>
+                    <th width="22%">Tình trạng lúc giao</th>
                     <th width="25%">Vị trí bàn giao</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td class="text-center">1</td>
+                    <td id="td_hinh_anh" class="img-cell">
+                        </td>
                     <td id="txt_ten_san_pham" style="font-weight: bold;"></td>
                     <td id="txt_so_luong" class="text-center"></td>
                     <td id="txt_tinh_trang"></td>
@@ -156,12 +163,11 @@
     </div>
 
     <script>
-        // Dữ liệu Mẫu (Demo)
         const demoData = {
             id: "9b30d30f",
             van_phong: "Thanh Hóa",
             ten_san_pham: "Bàn dài (1,2 x 2m)",
-            hinh_anh: "",
+            hinh_anh: "https://via.placeholder.com/150", 
             so_luong: 1,
             vi_tri: "Phòng họp văn phòng",
             tinh_trang: "Hoạt động tốt",
@@ -180,28 +186,23 @@
 
             if (rawData) {
                 try {
-                    // Cố gắng dịch ngược chuỗi JSON
                     printData = JSON.parse(rawData); 
                 } catch (e) {
                     console.error("Lỗi đọc dữ liệu JSON:", e);
-                    
-                    // NẾU LỖI: Bật hộp cảnh báo màu đỏ
                     const errorContainer = document.getElementById('error-container');
                     errorContainer.classList.add('no-print');
                     errorContainer.innerHTML = `
                         <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
                             <h3 style="margin-bottom: 8px;">⚠️ PHÁT HIỆN LỖI CÚ PHÁP JSON TỪ APPSHEET!</h3>
-                            <p>Hệ thống không thể đọc được dữ liệu truyền qua URL nên đang phải hiển thị bản Demo.</p>
-                            <p style="margin-top: 5px;"><b>Chi tiết lỗi:</b> ${e.message}</p>
+                            <p><b>Chi tiết lỗi:</b> ${e.message}</p>
                             <hr style="margin: 10px 0; border-color: #f5c6cb;">
-                            <p><b>Chuỗi JSON bị lỗi:</b> (Hãy cập nhật lại công thức SUBSTITUTE trong AppSheet để loại bỏ ký tự Enter/xuống dòng)</p>
+                            <p><b>Chuỗi JSON bị lỗi:</b></p>
                             <pre style="white-space: pre-wrap; font-size: 13px; background: #fff; padding: 10px; border: 1px solid #ccc; margin-top: 5px; color: #333;">${rawData}</pre>
                         </div>
                     `;
                 }
             }
 
-            // Đổ dữ liệu vào Form
             document.getElementById('txt_id').innerText = printData.id || "N/A";
             document.getElementById('txt_van_phong').innerText = printData.van_phong || "N/A";
             document.getElementById('txt_ngay_ban_giao').innerText = printData.ngay_ban_giao || "___/___/20___";
@@ -219,6 +220,14 @@
             document.getElementById('txt_tinh_trang').innerText = printData.tinh_trang || "N/A";
             document.getElementById('txt_vi_tri').innerText = printData.vi_tri || "N/A";
             
+            // LOGIC XỬ LÝ HÌNH ẢNH: Có thì chèn thẻ <img>, không có thì để trống
+            const tdHinhAnh = document.getElementById('td_hinh_anh');
+            if (printData.hinh_anh && printData.hinh_anh.trim() !== "") {
+                tdHinhAnh.innerHTML = `<img class="img-preview" src="${printData.hinh_anh}" alt="Ảnh SP">`;
+            } else {
+                tdHinhAnh.innerHTML = ""; // Ô trống hoàn toàn
+            }
+            
             if (printData.ghi_chu) {
                 document.getElementById('txt_ghi_chu').innerText = printData.ghi_chu;
             } else {
@@ -226,7 +235,6 @@
             }
         }
 
-        // Kích hoạt hàm loadData khi trang web tải xong
         document.addEventListener("DOMContentLoaded", loadData);
     </script>
 </body>
