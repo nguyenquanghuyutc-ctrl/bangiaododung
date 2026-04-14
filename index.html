@@ -163,11 +163,12 @@
     </div>
 
     <script>
+        // Dữ liệu mẫu hiển thị khi không có data truyền vào
         const demoData = {
             id: "9b30d30f",
             van_phong: "Thanh Hóa",
             ten_san_pham: "Bàn dài (1,2 x 2m)",
-            hinh_anh: "https://via.placeholder.com/150", 
+            hinh_anh: "", 
             so_luong: 1,
             vi_tri: "Phòng họp văn phòng",
             tinh_trang: "Hoạt động tốt",
@@ -203,6 +204,7 @@
                 }
             }
 
+            // Điền text vào các ô
             document.getElementById('txt_id').innerText = printData.id || "N/A";
             document.getElementById('txt_van_phong').innerText = printData.van_phong || "N/A";
             document.getElementById('txt_ngay_ban_giao').innerText = printData.ngay_ban_giao || "___/___/20___";
@@ -220,14 +222,20 @@
             document.getElementById('txt_tinh_trang').innerText = printData.tinh_trang || "N/A";
             document.getElementById('txt_vi_tri').innerText = printData.vi_tri || "N/A";
             
-            // LOGIC XỬ LÝ HÌNH ẢNH: Có thì chèn thẻ <img>, không có thì để trống
+            // ----------------------------------------------------
+            // LOGIC XỬ LÝ HÌNH ẢNH MỚI (CHỐNG LỖI LINK CỤT)
+            // ----------------------------------------------------
             const tdHinhAnh = document.getElementById('td_hinh_anh');
-            if (printData.hinh_anh && printData.hinh_anh.trim() !== "") {
-                tdHinhAnh.innerHTML = `<img class="img-preview" src="${printData.hinh_anh}" alt="Ảnh SP">`;
-            } else {
-                tdHinhAnh.innerHTML = ""; // Ô trống hoàn toàn
-            }
+            const linkAnh = printData.hinh_anh || "";
             
+            // Kiểm tra: Có link + Link không được rỗng + Link không bị đuôi "fileName=" 
+            if (linkAnh.trim() !== "" && !linkAnh.endsWith("fileName=")) {
+                tdHinhAnh.innerHTML = `<img class="img-preview" src="${linkAnh}" alt="Ảnh SP">`;
+            } else {
+                tdHinhAnh.innerHTML = ""; // Để trống hoàn toàn ô nếu không có ảnh hợp lệ
+            }
+            // ----------------------------------------------------
+
             if (printData.ghi_chu) {
                 document.getElementById('txt_ghi_chu').innerText = printData.ghi_chu;
             } else {
